@@ -1,0 +1,224 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Variables de tema */
+:root {
+  --color-snake-head: #0d9488; /* teal-600 */
+  --color-snake-body: #10b981; /* green-500 */
+  --color-apple: #ef4444;      /* red-500 */
+  --color-board-bg: #f3f4f6;   /* gray-100 */
+  --color-board-border: #e5e7eb; /* gray-200 */
+}
+
+/* Estilos personalizados adicionales */
+@layer base {
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    @apply bg-gray-100;
+  }
+}
+
+/* Estilos para tooltips personalizados */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 160px;
+  background-color: rgba(0, 0, 0, 0.9);
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 10px;
+  position: absolute;
+  z-index: 100;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.8rem;
+  font-weight: 500;
+  pointer-events: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.tooltip .tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.9) transparent transparent transparent;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+@layer utilities {
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .animate-pulse {
+    animation: pulse 1.5s infinite;
+  }
+  
+  .bg-snake-head {
+    background-color: var(--color-snake-head);
+  }
+  
+  .bg-snake-body {
+    background-color: var(--color-snake-body);
+  }
+  
+  .bg-apple {
+    background-color: var(--color-apple);
+  }
+  
+  .bg-board-bg {
+    background-color: var(--color-board-bg);
+  }
+  
+  .border-board-border {
+    border-color: var(--color-board-border);
+  }
+  
+  .text-snake-head {
+    color: var(--color-snake-head);
+  }
+  
+  .from-snake-head {
+    --tw-gradient-from: var(--color-snake-head);
+  }
+  
+  .to-snake-body {
+    --tw-gradient-to: var(--color-snake-body);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+/* Estilos para el modo de alto contraste */
+body.high-contrast {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+body.high-contrast button {
+  border: 2px solid #000000;
+}
+
+body.high-contrast .bg-board-bg {
+  background-color: #ffffff !important;
+}
+
+body.high-contrast .border-board-border {
+  border-color: #000000 !important;
+  border-width: 2px !important;
+}
+
+body.high-contrast .bg-snake-head,
+body.high-contrast .bg-snake-body {
+  background-color: #000000 !important;
+  border: 2px solid #ffffff !important;
+}
+
+body.high-contrast .bg-apple {
+  background-color: #ff0000 !important;
+  border: 2px solid #000000 !important;
+}
+
+/* Estilos responsivos */
+@media (max-width: 640px) {
+  .tooltip .tooltip-text {
+    width: 120px;
+    font-size: 0.7rem;
+    padding: 8px;
+  }
+  
+  h1.text-4xl {
+    font-size: 1.75rem;
+  }
+  
+  h2.text-xl {
+    font-size: 1.25rem;
+  }
+  
+  .px-5 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  .py-3 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+}
+
+/* Ajustes para pantallas muy pequeñas */
+@media (max-width: 480px) {
+  .grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+  
+  .flex.gap-3 {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .flex.gap-3 button {
+    margin-bottom: 0.5rem;
+  }
+  
+  .p-5 {
+    padding: 0.75rem;
+  }
+  
+  .p-4 {
+    padding: 0.5rem;
+  }
+  
+  .p-8 {
+    padding: 1rem;
+  }
+}
+
+/* Ajustes para el tablero de juego */
+@media (max-width: 480px) {
+  :root {
+    --cell-size-small: 15px;
+  }
+  
+  .game-board-container {
+    transform: scale(0.9);
+    transform-origin: top center;
+  }
+}
