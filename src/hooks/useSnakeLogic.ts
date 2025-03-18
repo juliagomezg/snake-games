@@ -7,6 +7,7 @@ import {
   DIFFICULTY_CONFIGS
 } from '../types/game';
 import { useSoundEffects } from './useSoundEffects';
+import { useGameTime } from './useGameTime';
 
 export type CollisionType = 'wall' | 'collision' | null;
 
@@ -59,8 +60,8 @@ export const useSnakeLogic = ({
   
   // Usar useRef para evitar re-renders innecesarios
   const gameLoopRef = useRef<number | null>(null);
-  const timeCounterRef = useRef<number | null>(null);
   const lastDirectionChangeRef = useRef<number>(0);
+  const lastMoveTimeRef = useRef<number>(0);
   
   // Función para generar una nueva posición para la manzana
   const generateNewApple = useCallback((): Position => {
@@ -236,68 +237,61 @@ export const useSnakeLogic = ({
     }
   }, [direction, updateGameState, speed, playMoveSound]);
   
-  // Configurar el bucle principal del juego
+  // Utilizamos el nuevo hook de tiempo de juego
+  useGameTime({
+    isActive: !isGameOver,
+    isPaused,
+    onSecondElapsed: incrementGameTime
+  });
+  
+  // Configurar el bucle principal del juego con requestAnimationFrame
   useEffect(() => {
-    if (isGameOver) {
-      // Limpiar intervalos si el juego terminó
+    if (isGameOver || isPaused) {
+      // Detener el bucle del juego si está terminado o pausado
       if (gameLoopRef.current) {
-        clearInterval(gameLoopRef.current);
+        cancelAnimationFrame(gameLoopRef.current);
         gameLoopRef.current = null;
-      }
-      if (timeCounterRef.current) {
-        clearInterval(timeCounterRef.current);
-        timeCounterRef.current = null;
       }
       return;
     }
     
-    if (isPaused) {
-      // Pausar el juego
-      if (gameLoopRef.current) {
-        clearInterval(gameLoopRef.current);
-        gameLoopRef.current = null;
+    // Función para el bucle del juego con requestAnimationFrame
+    const gameLoop = (timestamp: number) => {
+      // Inicializar el tiempo de referencia si es necesario
+      if (!lastMoveTimeRef.current) {
+        lastMoveTimeRef.current = timestamp;
       }
-      if (timeCounterRef.current) {
-        clearInterval(timeCounterRef.current);
-        timeCounterRef.current = null;
-      }
-      return;
-    }
-    
-    // Iniciar el bucle del juego
-    if (!gameLoopRef.current) {
+      
+      // Calcular el tiempo transcurrido desde el último movimiento
+      const elapsed = timestamp - lastMoveTimeRef.current;
+      
       // Aplicar el modificador de velocidad del power-up
       const adjustedSpeed = Math.round(speed * activePowerUps.speedModifier);
-      gameLoopRef.current = window.setInterval(moveSnake, adjustedSpeed);
+      
+      // Mover la serpiente si ha pasado el tiempo necesario
+      if (elapsed >= adjustedSpeed) {
+        moveSnake();
+        // Actualizar el tiempo de referencia, manteniendo el excedente para mayor precisión
+        lastMoveTimeRef.current = timestamp - (elapsed % adjustedSpeed);
+      }
+      
+      // Continuar el bucle
+      gameLoopRef.current = requestAnimationFrame(gameLoop);
+    };
+    
+    // Iniciar el bucle si no está activo
+    if (!gameLoopRef.current) {
+      gameLoopRef.current = requestAnimationFrame(gameLoop);
     }
     
-    // Iniciar el contador de tiempo
-    if (!timeCounterRef.current) {
-      timeCounterRef.current = window.setInterval(incrementGameTime, 1000);
-    }
-    
-    // Limpiar intervalos cuando cambian las dependencias
+    // Limpiar el bucle al desmontar o cuando cambian las dependencias
     return () => {
       if (gameLoopRef.current) {
-        clearInterval(gameLoopRef.current);
+        cancelAnimationFrame(gameLoopRef.current);
         gameLoopRef.current = null;
       }
-      if (timeCounterRef.current) {
-        clearInterval(timeCounterRef.current);
-        timeCounterRef.current = null;
-      }
     };
-  }, [isGameOver, isPaused, speed, activePowerUps.speedModifier, moveSnake, incrementGameTime]);
-  
-  // Actualizar el intervalo cuando cambia la velocidad o el modificador de velocidad
-  useEffect(() => {
-    if (!isPaused && !isGameOver && gameLoopRef.current) {
-      clearInterval(gameLoopRef.current);
-      // Aplicar el modificador de velocidad del power-up
-      const adjustedSpeed = Math.round(speed * activePowerUps.speedModifier);
-      gameLoopRef.current = window.setInterval(moveSnake, adjustedSpeed);
-    }
-  }, [speed, activePowerUps.speedModifier, isPaused, isGameOver, moveSnake]);
+  }, [isGameOver, isPaused, speed, activePowerUps.speedModifier, moveSnake]);
   
   return {
     changeDirection

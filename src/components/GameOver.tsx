@@ -69,15 +69,12 @@ const GameOver: React.FC<GameOverProps> = ({
           </div>
         </div>
         
-        <div className="tooltip w-full">
-          <button 
-            className="w-full py-3 px-6 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
-            onClick={onRestart}
-          >
-            Jugar de nuevo
-          </button>
-          <span className="tooltip-text">Reiniciar el juego y comenzar una nueva partida</span>
-        </div>
+        <button 
+          onClick={onRestart}
+          className="w-full p-3 bg-gradient-to-r from-green-400 to-green-500 text-white rounded-lg font-bold hover:scale-105 hover:shadow-lg transform transition-all duration-200"
+        >
+          Jugar de nuevo
+        </button>
       </div>
     </div>
   );

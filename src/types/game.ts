@@ -21,6 +21,7 @@ export interface PowerUp {
   type: PowerUpType;
   duration: number; // Duración en segundos
   expiresAt: number; // Tiempo de juego en el que expira
+  timestamp: number; // Timestamp real cuando se creó el power-up
 }
 
 // Efectos activos de power-ups
@@ -28,6 +29,13 @@ export interface ActivePowerUps {
   doublePoints: boolean;
   invincibility: boolean;
   speedModifier: number; // 1 = normal, < 1 = más rápido, > 1 = más lento
+}
+
+// Timestamps de expiración de power-ups
+export interface PowerUpTimestamps {
+  doublePoints: number | null;
+  invincibility: number | null;
+  speedModifier: number | null;
 }
 
 // Configuración según nivel de dificultad
@@ -111,9 +119,12 @@ export interface GameState {
   apple: Position; // Posición de la manzana
   powerUp: PowerUp | null; // Power-up actual en el tablero
   activePowerUps: ActivePowerUps; // Power-ups activos
+  powerUpTimestamps: PowerUpTimestamps; // Timestamps de expiración de power-ups
   direction: Direction; // Dirección actual
   score: number; // Puntuación
   gameTime: number; // Tiempo de juego en segundos
+  gameStartTime: number; // Timestamp real cuando inició el juego
+  lastUpdateTime: number; // Timestamp del último update
   isGameOver: boolean; // Si el juego ha terminado
   isPaused: boolean; // Si el juego está pausado
   speed: number; // Velocidad actual (ms)

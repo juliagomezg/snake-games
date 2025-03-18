@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Position, DifficultyLevel, DIFFICULTY_CONFIGS } from '../types/game';
 import { GameSessionData, apiService } from '../services/apiService';
 import { CollisionType } from './useSnakeLogic';

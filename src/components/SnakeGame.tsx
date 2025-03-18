@@ -23,6 +23,7 @@ import { ThemeOption } from './ThemeSelector';
 import AIInsights from './AIInsights';
 import PersonalizedRecommendations from './PersonalizedRecommendations';
 import { useGameTracking } from '../hooks/useGameTracking';
+import TouchControls from './TouchControls';
 
 const SnakeGame: React.FC = () => {
   const [showHighScores, setShowHighScores] = useState(false);
@@ -237,7 +238,7 @@ const SnakeGame: React.FC = () => {
   };
   
   return (
-    <div className="flex flex-col items-center w-full max-w-xl mx-auto p-3 sm:p-5 relative bg-gradient-to-b from-gray-50 to-gray-100 rounded-xl shadow-lg">
+    <div className="flex flex-col items-center w-full max-w-xl mx-auto p-3 sm:p-5 relative bg-gradient-to-b from-gray-50 to-gray-100 rounded-xl shadow-lg game-container">
       <h1 className="text-3xl sm:text-4xl font-bold mb-4 sm:mb-6 text-snake-head text-center bg-clip-text text-transparent bg-gradient-to-r from-snake-head to-snake-body">
         Juego de la Serpiente
       </h1>
@@ -276,6 +277,12 @@ const SnakeGame: React.FC = () => {
             onRestart={resetGame}
             soundEnabled={soundEnabled}
             onSoundToggle={toggleSounds}
+          />
+          
+          {/* Controles táctiles para dispositivos móviles */}
+          <TouchControls 
+            onDirectionChange={changeDirection}
+            isDisabled={gameState.isGameOver || gameState.isPaused}
           />
           
           <div className="flex flex-wrap gap-2 sm:gap-3 mt-4 sm:mt-6 justify-center w-full">

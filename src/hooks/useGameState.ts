@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { 
   GameState, 
   Position, 
@@ -57,7 +57,8 @@ const generateRandomPowerUp = (snake: Position[], apple: Position, gameTime: num
     position,
     type: randomType,
     duration: config.duration,
-    expiresAt: gameTime + config.duration
+    expiresAt: gameTime + config.duration,
+    timestamp: Date.now() // Añadir timestamp para un seguimiento más preciso
   };
 };
 
@@ -80,11 +81,18 @@ const initialGameState = (difficulty: DifficultyLevel = 'MEDIUM'): GameState => 
       invincibility: false,
       speedModifier: 1
     },
+    powerUpTimestamps: {
+      doublePoints: null,
+      invincibility: null,
+      speedModifier: null
+    },
     direction: 'RIGHT',
     score: 0,
     isGameOver: false,
     isPaused: false,
     gameTime: 0,
+    gameStartTime: Date.now(),
+    lastUpdateTime: Date.now(),
     speed: config.initialSpeed,
     difficulty
   };
@@ -97,18 +105,42 @@ interface UseGameStateOptions {
 export const useGameState = (options: UseGameStateOptions = {}) => {
   const { initialDifficulty = 'MEDIUM' } = options;
   const [gameState, setGameState] = useState<GameState>(initialGameState(initialDifficulty));
+  const pauseStartTimeRef = useRef<number | null>(null);
+  const totalPausedTimeRef = useRef<number>(0);
   
   // Reiniciar el juego
   const resetGame = useCallback(() => {
-    setGameState(prevState => initialGameState(prevState.difficulty));
+    setGameState(prevState => {
+      const newState = initialGameState(prevState.difficulty);
+      // Reiniciar los contadores de tiempo
+      totalPausedTimeRef.current = 0;
+      pauseStartTimeRef.current = null;
+      return newState;
+    });
   }, []);
   
   // Pausar/reanudar el juego
   const togglePause = useCallback(() => {
-    setGameState(prevState => ({
-      ...prevState,
-      isPaused: !prevState.isPaused
-    }));
+    setGameState(prevState => {
+      const now = Date.now();
+      
+      if (prevState.isPaused) {
+        // Al reanudar, calcular el tiempo que estuvo pausado
+        if (pauseStartTimeRef.current) {
+          totalPausedTimeRef.current += (now - pauseStartTimeRef.current);
+          pauseStartTimeRef.current = null;
+        }
+      } else {
+        // Al pausar, guardar el tiempo actual
+        pauseStartTimeRef.current = now;
+      }
+      
+      return {
+        ...prevState,
+        isPaused: !prevState.isPaused,
+        lastUpdateTime: now
+      };
+    });
   }, []);
   
   // Actualizar el estado del juego
@@ -137,19 +169,19 @@ export const useGameState = (options: UseGameStateOptions = {}) => {
       let powerUpsChanged = false;
       
       // Verificar si el power-up de doble puntos debe expirar
-      if (activePowerUps.doublePoints && newGameTime >= prevState.powerUp?.expiresAt!) {
+      if (activePowerUps.doublePoints && prevState.powerUp?.expiresAt && newGameTime >= prevState.powerUp.expiresAt) {
         activePowerUps.doublePoints = false;
         powerUpsChanged = true;
       }
       
       // Verificar si el power-up de invencibilidad debe expirar
-      if (activePowerUps.invincibility && newGameTime >= prevState.powerUp?.expiresAt!) {
+      if (activePowerUps.invincibility && prevState.powerUp?.expiresAt && newGameTime >= prevState.powerUp.expiresAt) {
         activePowerUps.invincibility = false;
         powerUpsChanged = true;
       }
       
       // Verificar si el modificador de velocidad debe expirar
-      if (activePowerUps.speedModifier !== 1 && newGameTime >= prevState.powerUp?.expiresAt!) {
+      if (activePowerUps.speedModifier !== 1 && prevState.powerUp?.expiresAt && newGameTime >= prevState.powerUp.expiresAt) {
         activePowerUps.speedModifier = 1;
         powerUpsChanged = true;
       }
@@ -165,6 +197,9 @@ export const useGameState = (options: UseGameStateOptions = {}) => {
   // Cambiar la dificultad
   const changeDifficulty = useCallback((difficulty: DifficultyLevel) => {
     setGameState(initialGameState(difficulty));
+    // Reiniciar contadores de tiempo
+    totalPausedTimeRef.current = 0;
+    pauseStartTimeRef.current = null;
   }, []);
   
   // Generar un nuevo power-up
@@ -191,23 +226,30 @@ export const useGameState = (options: UseGameStateOptions = {}) => {
     });
   }, []);
   
-  // Activar un power-up
+  // Activar un power-up con seguimiento de tiempo preciso
   const activatePowerUp = useCallback((type: PowerUpType) => {
     setGameState(prevState => {
       const activePowerUps = { ...prevState.activePowerUps };
+      const powerUpTimestamps = { ...prevState.powerUpTimestamps };
+      const now = Date.now();
+      const duration = POWER_UP_CONFIGS[type].duration * 1000; // Convertir a milisegundos
       
       switch (type) {
         case 'DOUBLE_POINTS':
           activePowerUps.doublePoints = true;
+          powerUpTimestamps.doublePoints = now + duration;
           break;
         case 'INVINCIBILITY':
           activePowerUps.invincibility = true;
+          powerUpTimestamps.invincibility = now + duration;
           break;
         case 'SPEED':
           activePowerUps.speedModifier = 0.5; // Más rápido
+          powerUpTimestamps.speedModifier = now + duration;
           break;
         case 'SLOW':
           activePowerUps.speedModifier = 1.5; // Más lento
+          powerUpTimestamps.speedModifier = now + duration;
           break;
         case 'SHRINK':
           // Reducir el tamaño de la serpiente a la mitad (mínimo 1)
@@ -222,6 +264,7 @@ export const useGameState = (options: UseGameStateOptions = {}) => {
       return {
         ...prevState,
         activePowerUps,
+        powerUpTimestamps,
         powerUp: null
       };
     });

@@ -10,13 +10,12 @@ export interface Achievement {
 }
 
 interface AchievementsProps {
-  score: number;
   highestScore: number;
 }
 
 const STORAGE_KEY = 'snake-game-achievements';
 
-const Achievements: React.FC<AchievementsProps> = ({ score, highestScore }) => {
+const Achievements: React.FC<AchievementsProps> = ({ highestScore }) => {
   const [achievements, setAchievements] = useState<Achievement[]>([
     {
       id: 'first-bite',

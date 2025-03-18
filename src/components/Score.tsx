@@ -1,11 +1,23 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 
 interface ScoreProps {
   score: number;
   gameTime: number;
 }
 
+/**
+ * Componente para mostrar la puntuación y el tiempo de juego
+ * Implementa un sistema anti-parpadeo al actualizar el tiempo
+ */
 const Score: React.FC<ScoreProps> = ({ score, gameTime }) => {
+  // Estado local para animación suave del tiempo
+  const [displayTime, setDisplayTime] = useState(gameTime);
+  
+  // Actualizar el tiempo mostrado con animación suave
+  useEffect(() => {
+    setDisplayTime(gameTime);
+  }, [gameTime]);
+  
   // Formatear el tiempo en formato mm:ss
   const formatTime = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -19,12 +31,12 @@ const Score: React.FC<ScoreProps> = ({ score, gameTime }) => {
       <div className="flex justify-between">
         <div className="w-5/12 bg-gradient-to-b from-gray-50 to-gray-100 p-2 sm:p-3 rounded-lg text-center">
           <div className="text-xs sm:text-sm text-gray-500 mb-1">Puntuación</div>
-          <div className="text-xl sm:text-3xl font-bold text-snake-head">{score}</div>
+          <div className="text-xl sm:text-3xl font-bold text-snake-head transition-all duration-300">{score}</div>
         </div>
         
         <div className="w-5/12 bg-gradient-to-b from-gray-50 to-gray-100 p-2 sm:p-3 rounded-lg text-center">
           <div className="text-xs sm:text-sm text-gray-500 mb-1">Tiempo</div>
-          <div className="text-xl sm:text-3xl font-bold text-gray-800">{formatTime(gameTime)}</div>
+          <div className="text-xl sm:text-3xl font-bold text-gray-800 transition-all duration-300">{formatTime(displayTime)}</div>
         </div>
       </div>
     </div>

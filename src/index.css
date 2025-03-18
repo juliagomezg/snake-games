@@ -14,8 +14,16 @@
 /* Estilos personalizados adicionales */
 @layer base {
   body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    @apply bg-gray-100;
+    font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: rgb(243, 244, 246);
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Evitar desplazamiento en el documento completo */
+    position: fixed;
+    width: 100%;
+    height: 100%;
   }
 }
 
@@ -221,4 +229,53 @@ body.high-contrast .bg-apple {
     transform: scale(0.9);
     transform-origin: top center;
   }
+}
+
+/* Clase para aplicar al contenedor del juego */
+.game-container {
+  touch-action: none; /* Prevenir gestos táctiles del navegador */
+  -webkit-tap-highlight-color: transparent; /* Eliminar resaltado al tocar en iOS */
+  overscroll-behavior: none; /* Prevenir desplazamiento de rebote en algunos dispositivos */
+  -webkit-overflow-scrolling: auto; /* Desactivar desplazamiento con inercia en iOS */
+}
+
+/* Estilos personalizados para controles touch */
+.touch-controls {
+  display: none; /* Ocultos por defecto, se mostrarán en dispositivos táctiles */
+}
+
+@media (max-width: 768px) or (hover: none) {
+  .touch-controls {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 8px;
+    max-width: 200px;
+    margin: 0 auto;
+    touch-action: manipulation; /* Mejorar respuesta táctil */
+  }
+  
+  .touch-btn {
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+  
+  .touch-btn:active {
+    background-color: rgba(200, 200, 200, 0.8);
+    transform: scale(0.95);
+  }
+  
+  /* Posiciones de los botones */
+  .touch-up { grid-area: 1 / 2; }
+  .touch-left { grid-area: 2 / 1; }
+  .touch-right { grid-area: 2 / 3; }
+  .touch-down { grid-area: 3 / 2; }
 }
