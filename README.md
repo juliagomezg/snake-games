@@ -1,54 +1,86 @@
-# React + TypeScript + Vite
+# 🐍 Snake Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Un moderno juego de Snake desarrollado con React, TypeScript y Tailwind CSS.
 
-Currently, two official plugins are available:
+![Juego de Snake](./screenshots/snake-game.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🎮 Características
 
-## Expanding the ESLint configuration
+- 🎯 Juego clásico de Snake con mecánicas modernas
+- 🔄 Sistema de puntuación y seguimiento de tiempo preciso
+- 🎨 Diseño responsivo y estético con gradientes y animaciones
+- 📱 Controles táctiles para dispositivos móviles
+- 🎚️ Múltiples niveles de dificultad
+- 🏆 Tabla de puntuaciones altas
+- 📊 Estadísticas de juego
+- 🎵 Efectos de sonido
+- 🔄 Power-ups durante el juego
+- 🔍 Análisis de IA sobre tu estilo de juego
+- 🎛️ Opciones de accesibilidad
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠️ Tecnologías utilizadas
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- React
+- TypeScript
+- Tailwind CSS
+- Vite
+
+## 🚀 Instalación y ejecución
+
+1. Clona este repositorio
+```bash
+git clone https://github.com/juliagomezg/snake-games.git
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+2. Instala las dependencias
+```bash
+cd snake-games
+npm install
 ```
+
+3. Ejecuta el servidor de desarrollo
+```bash
+npm run dev
+```
+
+4. Abre http://localhost:5173/snake-games/ en tu navegador
+
+## 🎯 Cómo jugar
+
+- Usa las teclas de flecha (o WASD) para controlar la dirección de la serpiente
+- En dispositivos móviles, utiliza los controles táctiles en pantalla
+- Recoge las manzanas para aumentar tu puntuación y el tamaño de la serpiente
+- Recoge power-ups para obtener ventajas temporales
+- Evita chocar con las paredes o con tu propia cola
+- Presiona P para pausar el juego
+- Presiona R para reiniciar el juego
+
+## 📁 Estructura del proyecto
+
+El proyecto está organizado en las siguientes ramas:
+
+- `main`: Código principal y actualizado
+- `feature/game-core`: Funcionalidad básica del juego
+- `feature/timing-improvement`: Mejoras en el sistema de tiempo
+- `feature/touch-controls`: Implementación de controles táctiles
+- `feature/ui-enhancements`: Mejoras visuales y de interfaz
+
+## 📝 To-Do (Próximas características)
+
+- [ ] Modo multijugador
+- [ ] Más tipos de power-ups
+- [ ] Niveles con obstáculos
+- [ ] Temas personalizables adicionales
+- [ ] Sonidos y música mejorados
+
+## 🤝 Contribuciones
+
+Las contribuciones son bienvenidas. Por favor, crea un fork del proyecto y envía un Pull Request para cualquier mejora.
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
+
+---
+
+Hecho con ❤️ por [Julia Gómez](https://github.com/juliagomezg)
