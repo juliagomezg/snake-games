@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Position, DifficultyLevel, DIFFICULTY_CONFIGS } from '../types/game';
 import { GameSessionData, apiService } from '../services/apiService';
 import { CollisionType } from './useSnakeLogic';
@@ -16,7 +16,7 @@ interface UseGameTrackingProps {
 
 export const useGameTracking = ({
   snake,
-  apple,
+  apple: _apple,
   score,
   gameTime,
   difficulty,

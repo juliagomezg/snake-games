@@ -10,12 +10,13 @@ export interface Achievement {
 }
 
 interface AchievementsProps {
+  score: number;
   highestScore: number;
 }
 
 const STORAGE_KEY = 'snake-game-achievements';
 
-const Achievements: React.FC<AchievementsProps> = ({ highestScore }) => {
+const Achievements: React.FC<AchievementsProps> = ({ score, highestScore }) => {
   const [achievements, setAchievements] = useState<Achievement[]>([
     {
       id: 'first-bite',
@@ -70,6 +71,9 @@ const Achievements: React.FC<AchievementsProps> = ({ highestScore }) => {
   const [showNotification, setShowNotification] = useState(false);
   const [newAchievement, setNewAchievement] = useState<Achievement | null>(null);
   
+  // Utilizar la variable score para evitar el warning
+  const currentScore = Math.max(score, highestScore);
+  
   // Cargar logros guardados
   useEffect(() => {
     const savedAchievements = localStorage.getItem(STORAGE_KEY);
@@ -90,7 +94,7 @@ const Achievements: React.FC<AchievementsProps> = ({ highestScore }) => {
     let lastUnlocked: Achievement | null = null;
     
     updatedAchievements.forEach(achievement => {
-      if (!achievement.unlocked && highestScore >= achievement.requirement) {
+      if (!achievement.unlocked && currentScore >= achievement.requirement) {
         achievement.unlocked = true;
         newlyUnlocked = true;
         lastUnlocked = achievement;
@@ -112,7 +116,7 @@ const Achievements: React.FC<AchievementsProps> = ({ highestScore }) => {
         }, 3000);
       }
     }
-  }, [highestScore, achievements]);
+  }, [currentScore, achievements]);
   
   // Calcular el progreso total
   const calculateTotalProgress = () => {

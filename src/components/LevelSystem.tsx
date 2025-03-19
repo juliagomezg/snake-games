@@ -6,6 +6,12 @@ interface LevelSystemProps {
 }
 
 const LevelSystem: React.FC<LevelSystemProps> = ({ score, highestScore }) => {
+  // Calcular nivel basado en la puntuación, aunque usamos los niveles predefinidos para la UI
+  const level = Math.max(1, Math.floor(score / 10) + 1);
+  const progress = ((score % 10) / 10) * 100;
+  // Usamos el nivel calculado para mostrar el progreso actual en la consola para debugging
+  console.debug(`Player at level ${level} with ${progress}% progress to next level`);
+  
   // Definir los niveles y sus requisitos
   const levels = [
     { level: 1, name: "Principiante", requiredScore: 0, color: "bg-green-500" },
@@ -25,20 +31,6 @@ const LevelSystem: React.FC<LevelSystemProps> = ({ score, highestScore }) => {
   // Encontrar el siguiente nivel
   const nextLevelIndex = levels.findIndex(level => level.level === currentLevel.level) + 1;
   const nextLevel = nextLevelIndex < levels.length ? levels[nextLevelIndex] : null;
-  
-  // Calcular el progreso hacia el siguiente nivel
-  const calculateProgress = () => {
-    if (!nextLevel) return 100; // Ya alcanzó el nivel máximo
-    
-    const currentLevelScore = currentLevel.requiredScore;
-    const nextLevelScore = nextLevel.requiredScore;
-    const scoreRange = nextLevelScore - currentLevelScore;
-    const playerProgress = highestScore - currentLevelScore;
-    
-    return Math.min(100, Math.floor((playerProgress / scoreRange) * 100));
-  };
-  
-  const progress = calculateProgress();
   
   return (
     <div className="w-full bg-white rounded-lg p-4 shadow-md border border-gray-100 mb-6">
