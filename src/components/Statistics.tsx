@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { GameStats } from '../hooks/useStats';
 
 interface StatisticsProps {
@@ -21,6 +21,27 @@ const Statistics: React.FC<StatisticsProps> = ({
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
   
+  // Utilizamos useMemo para evitar recálculos innecesarios
+  const statsValues = useMemo(() => {
+    return {
+      gamesPlayed: stats.gamesPlayed,
+      highestScore: stats.highestScore,
+      averageScore: averageScore,
+      averageTime: formatTime(averageTime),
+      applesEaten: stats.applesEaten,
+      totalTime: formatTime(stats.totalTime),
+      totalScore: stats.totalScore,
+      wallDeaths: stats.deaths.wall,
+      collisionDeaths: stats.deaths.collision,
+      wallDeathsPercentage: stats.gamesPlayed > 0 
+        ? `${Math.round((stats.deaths.wall / stats.gamesPlayed) * 100)}%` 
+        : '0%',
+      collisionDeathsPercentage: stats.gamesPlayed > 0 
+        ? `${Math.round((stats.deaths.collision / stats.gamesPlayed) * 100)}%` 
+        : '0%'
+    };
+  }, [stats, averageScore, averageTime]);
+  
   return (
     <div className="w-full bg-white rounded-lg p-4 shadow-md border border-gray-100 mb-6">
       <div className="flex justify-between items-center mb-4">
@@ -36,22 +57,22 @@ const Statistics: React.FC<StatisticsProps> = ({
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="bg-gray-50 p-3 rounded-lg">
           <div className="text-sm text-gray-500">Partidas jugadas</div>
-          <div className="text-2xl font-bold text-gray-800">{stats.gamesPlayed}</div>
+          <div className="text-2xl font-bold text-gray-800">{statsValues.gamesPlayed}</div>
         </div>
         
         <div className="bg-gray-50 p-3 rounded-lg">
           <div className="text-sm text-gray-500">Puntuación más alta</div>
-          <div className="text-2xl font-bold text-snake-head">{stats.highestScore}</div>
+          <div className="text-2xl font-bold text-snake-head">{statsValues.highestScore}</div>
         </div>
         
         <div className="bg-gray-50 p-3 rounded-lg">
           <div className="text-sm text-gray-500">Puntuación media</div>
-          <div className="text-2xl font-bold text-gray-800">{averageScore}</div>
+          <div className="text-2xl font-bold text-gray-800">{statsValues.averageScore}</div>
         </div>
         
         <div className="bg-gray-50 p-3 rounded-lg">
           <div className="text-sm text-gray-500">Tiempo medio</div>
-          <div className="text-2xl font-bold text-gray-800">{formatTime(averageTime)}</div>
+          <div className="text-2xl font-bold text-gray-800">{statsValues.averageTime}</div>
         </div>
       </div>
       
@@ -61,17 +82,17 @@ const Statistics: React.FC<StatisticsProps> = ({
         <div className="space-y-2">
           <div className="flex justify-between items-center">
             <span className="text-gray-600">Manzanas comidas</span>
-            <span className="font-medium text-gray-800">{stats.applesEaten}</span>
+            <span className="font-medium text-gray-800">{statsValues.applesEaten}</span>
           </div>
           
           <div className="flex justify-between items-center">
             <span className="text-gray-600">Tiempo total de juego</span>
-            <span className="font-medium text-gray-800">{formatTime(stats.totalTime)}</span>
+            <span className="font-medium text-gray-800">{statsValues.totalTime}</span>
           </div>
           
           <div className="flex justify-between items-center">
             <span className="text-gray-600">Puntuación total</span>
-            <span className="font-medium text-gray-800">{stats.totalScore}</span>
+            <span className="font-medium text-gray-800">{statsValues.totalScore}</span>
           </div>
         </div>
       </div>
@@ -82,21 +103,17 @@ const Statistics: React.FC<StatisticsProps> = ({
         <div className="grid grid-cols-2 gap-3">
           <div className="bg-red-50 p-3 rounded-lg">
             <div className="text-sm text-red-500">Colisión con pared</div>
-            <div className="text-xl font-bold text-red-600">{stats.deaths.wall}</div>
+            <div className="text-xl font-bold text-red-600">{statsValues.wallDeaths}</div>
             <div className="text-xs text-red-400 mt-1">
-              {stats.gamesPlayed > 0 
-                ? `${Math.round((stats.deaths.wall / stats.gamesPlayed) * 100)}% de las muertes` 
-                : '0% de las muertes'}
+              {statsValues.wallDeathsPercentage} de las muertes
             </div>
           </div>
           
           <div className="bg-red-50 p-3 rounded-lg">
             <div className="text-sm text-red-500">Colisión con serpiente</div>
-            <div className="text-xl font-bold text-red-600">{stats.deaths.collision}</div>
+            <div className="text-xl font-bold text-red-600">{statsValues.collisionDeaths}</div>
             <div className="text-xs text-red-400 mt-1">
-              {stats.gamesPlayed > 0 
-                ? `${Math.round((stats.deaths.collision / stats.gamesPlayed) * 100)}% de las muertes` 
-                : '0% de las muertes'}
+              {statsValues.collisionDeathsPercentage} de las muertes
             </div>
           </div>
         </div>

@@ -4,6 +4,9 @@ import { Position, DifficultyLevel } from '../types/game';
 // URL base del backend (cambiar por la URL real cuando esté disponible)
 const API_BASE_URL = 'https://api.snake-game-analytics.com';
 
+// Variable para forzar el modo de desarrollo para simulación
+const USE_SIMULATION = true;
+
 // Interfaz para los datos de una partida
 export interface GameSessionData {
   id?: string;
@@ -52,8 +55,8 @@ class ApiService {
   // Enviar datos de una partida al backend
   async sendGameData(gameData: GameSessionData): Promise<{ success: boolean; sessionId?: string; error?: string }> {
     try {
-      // En un entorno de desarrollo, simular una respuesta exitosa
-      if (process.env.NODE_ENV === 'development') {
+      // Simular una respuesta exitosa tanto en desarrollo como en despliegue hasta que tengamos un backend real
+      if (process.env.NODE_ENV === 'development' || USE_SIMULATION) {
         console.log('Enviando datos de juego al backend (simulado):', gameData);
         return {
           success: true,
@@ -92,8 +95,8 @@ class ApiService {
   // Obtener insights generados por la IA
   async getAIInsights(sessionId: string): Promise<{ success: boolean; insights?: AIInsights; error?: string }> {
     try {
-      // En un entorno de desarrollo, simular insights de IA
-      if (process.env.NODE_ENV === 'development') {
+      // Simular insights de IA tanto en desarrollo como en despliegue hasta que tengamos un backend real
+      if (process.env.NODE_ENV === 'development' || USE_SIMULATION) {
         console.log('Obteniendo insights de IA (simulados) para la sesión:', sessionId);
         
         // Simular un retraso para imitar el procesamiento de la IA
@@ -171,8 +174,8 @@ class ApiService {
   // Enviar estadísticas acumuladas para análisis
   async sendStatsForAnalysis(stats: GameStats): Promise<{ success: boolean; analysisId?: string; error?: string }> {
     try {
-      // En un entorno de desarrollo, simular una respuesta exitosa
-      if (process.env.NODE_ENV === 'development') {
+      // Simular una respuesta exitosa tanto en desarrollo como en despliegue hasta que tengamos un backend real
+      if (process.env.NODE_ENV === 'development' || USE_SIMULATION) {
         console.log('Enviando estadísticas para análisis (simulado):', stats);
         return {
           success: true,
@@ -219,8 +222,8 @@ class ApiService {
     error?: string 
   }> {
     try {
-      // En un entorno de desarrollo, simular recomendaciones
-      if (process.env.NODE_ENV === 'development') {
+      // Simular recomendaciones tanto en desarrollo como en despliegue hasta que tengamos un backend real
+      if (process.env.NODE_ENV === 'development' || USE_SIMULATION) {
         console.log('Obteniendo recomendaciones personalizadas (simuladas)');
         
         // Simular un retraso para imitar el procesamiento
